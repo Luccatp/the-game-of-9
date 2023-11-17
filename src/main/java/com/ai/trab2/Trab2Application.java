@@ -1,6 +1,7 @@
 package com.ai.trab2;
 
 import com.ai.trab2.entities.Table;
+import com.ai.trab2.services.BreadthFirst;
 import com.ai.trab2.services.DepthFirst;
 import com.ai.trab2.utils.ArrayTransformations;
 import org.springframework.boot.CommandLineRunner;
@@ -18,15 +19,11 @@ public class Trab2Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		ArrayTransformations arrayUtils = new ArrayTransformations();
 
-		int[][] teste = arrayUtils.arrayToMatrix(new int[]{1,2,3,4,5,6,7,8,9});
+		int[][] teste = ArrayTransformations.arrayToMatrix(new int[]{1,2,0,4,5,6,7,8,3});
+		int[][] finalArray = new int[][]{{1,2,3},{4,5,6},{7,8,0}};
 
-		for(int[] array : teste)
-			System.out.println(Arrays.toString(array));
-
-		int[] testeArray = arrayUtils.matrixToArray(teste);
-
-		System.out.println(Arrays.toString(testeArray));
+		BreadthFirst breadthFirst = new BreadthFirst();
+		breadthFirst.solveBreadthFirst(teste, finalArray, 3,0);
 	}
 }
