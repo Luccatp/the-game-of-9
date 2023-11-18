@@ -1,23 +1,22 @@
 package com.ai.trab2.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.LinkedList;
 import java.util.List;
 
 @Getter
-public class Tree {
+public class Node {
     private Table table;
-    private List<Tree> children;
+    private List<Node> children;
 
-    public Tree(Table table) {
+    public Node(Table table) {
         this.table = table;
         this.children = new LinkedList<>();
     }
 
-    public Tree addChild(Table table) {
-        Tree newChild = new Tree(table);
+    public Node addChild(Table table) {
+        Node newChild = new Node(table);
         children.add(newChild);
         return newChild;
     }
