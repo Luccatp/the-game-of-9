@@ -1,22 +1,29 @@
 package com.ai.trab2.entities;
 
+import com.ai.trab2.utils.ArrayTransformations;
 import lombok.Getter;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 @Getter
 public class Node {
-    private Table table;
+    private final int[][] value;
+    private final Node parent;
+    private final int[] zeroPosition;
     private List<Node> children;
 
-    public Node(Table table) {
-        this.table = table;
+    public Node(int[][] value, Node parent) {
+        this.value = value;
+        this.parent = parent;
         this.children = new LinkedList<>();
+
+        zeroPosition = ArrayTransformations.findIndexInMatrix(value, 0);
     }
 
-    public Node addChild(Table table) {
-        Node newChild = new Node(table);
+    public Node addChild(int[][] value) {
+        Node newChild = new Node(value, this);
         children.add(newChild);
         return newChild;
     }

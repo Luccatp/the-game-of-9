@@ -28,13 +28,15 @@ public class ArrayTransformations {
         return result;
     }
 
-    public static int findIndexInArray(int[] arrayToFind, int numberToFind) {
-        for(int i = 0; i <= arrayToFind.length; i++) {
-            if(arrayToFind[i] == numberToFind) {
-                return i;
+    public static int[] findIndexInMatrix(int[][] matrix, int numberToFind) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j] == numberToFind) {
+                    return new int[]{i, j}; // Return the indices if the number is found
+                }
             }
         }
-        return -99;
+        return null; // Return null if the number is not found
     }
 
     public static boolean compareMatrixes(int[][] firstMatrix, int[][] secondMatrix) {
