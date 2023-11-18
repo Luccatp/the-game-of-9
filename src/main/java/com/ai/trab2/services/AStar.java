@@ -1,22 +1,24 @@
 package com.ai.trab2.services;
 
 import com.ai.trab2.entities.Node;
-import com.ai.trab2.services.interfaces.GreedyBestFirstInterface;
+import com.ai.trab2.services.interfaces.AStarInterface;
 import com.ai.trab2.utils.ArrayTransformations;
 import com.ai.trab2.utils.MazeUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
-public class GreedyBestFirst implements GreedyBestFirstInterface {
+public class AStar implements AStarInterface {
     private int numberOfNodesCreated = 0;
     private int getNumberOfNodesVisited = 0;
-    private int[][] finalMatrix = new int[][]{{1,2,3}, {4,5,6}, {7,8,0}};
+    private int[][] finalMatrix = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 0}};
 
     @Override
-    public void solveGreedyBestFirst(int[][] initialMatrix, int[][] finalMatrix, int x, int y) {
+    public void solveAStar(int[][] initialMatrix, int[][] finalMatrix, int x, int y) {
         this.finalMatrix = finalMatrix;
         Node root = new Node(initialMatrix, null);
-        PriorityQueue<Node> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(this::calculateHeuristic));
+        PriorityQueue<Node> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(this::calculateAStarCost));
         priorityQueue.add(root);
 
         numberOfNodesCreated++;
@@ -39,12 +41,10 @@ public class GreedyBestFirst implements GreedyBestFirstInterface {
     }
 
     private void expandNode(Node node) {
-        // Implement logic to generate child nodes based on the game rules
-        // For the 9-puzzle game, you need to create child nodes by swapping the empty space with adjacent tiles
-
-        // Example code (you need to adapt it based on the actual game rules)
         int[][] currentValue = node.getValue();
         int[] zeroPosition = node.getZeroPosition();
+
+        // Example code (you need to adapt it based on the actual game rules)
         if (zeroPosition[0] - 1 >= 0) {
             int up = currentValue[zeroPosition[0] - 1][zeroPosition[1]];
             int[][] upMatrix = swap(currentValue, up);
@@ -77,6 +77,7 @@ public class GreedyBestFirst implements GreedyBestFirstInterface {
                 node.addChild(rightMatrix);
             }
         }
+
         for (Node children : node.getChildren()) {
             this.numberOfNodesCreated++;
         }
@@ -108,8 +109,29 @@ public class GreedyBestFirst implements GreedyBestFirstInterface {
         return hasEqualParent;
     }
 
+    private int calculateAStarCost(Node node) {
+        // G(n): Custo real do caminho do nó inicial até o nó atual
+        int gCost = calculateGCost(node);
+
+        // H(n): Custo heurístico do nó atual até o objetivo
+        int hCost = calculateHeuristic(node);
+
+        // F(n): Custo total (F(n) = G(n) + H(n))
+        return gCost + hCost;
+    }
+
+    private int calculateGCost(Node node) {
+        // G(n) é o número de movimentos feitos até o nó atual
+        int gCost = 0;
+        Node currentNode = node;
+        while (currentNode.getParent() != null) {
+            gCost++;
+            currentNode = currentNode.getParent();
+        }
+        return gCost;
+    }
+
     private int calculateHeuristic(Node node) {
-        // Implementação da heurística, neste caso, Distância de Manhattan
         int[][] currentState = node.getValue();
         int[][] goalState = this.finalMatrix;
 

@@ -1,7 +1,9 @@
 package com.ai.trab2;
 
+import com.ai.trab2.services.AStar;
 import com.ai.trab2.services.BreadthFirst;
 import com.ai.trab2.services.DepthFirst;
+import com.ai.trab2.services.GreedyBestFirst;
 import com.ai.trab2.utils.ArrayTransformations;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -58,7 +60,11 @@ public class Trab2Application implements CommandLineRunner {
 
 		BreadthFirst breadthFirst = new BreadthFirst();
 		DepthFirst depthFirst = new DepthFirst();
+		GreedyBestFirst greedyBestFirst = new GreedyBestFirst();
+		AStar aStar = new AStar();
 //		breadthFirst.solveBreadthFirst(matrix1, finalMatrix, 0,2);
-		depthFirst.solveDepthFirst(matrix1, finalMatrix, 2, 0);
+//		depthFirst.solveDepthFirst(matrix5, finalMatrix, 2, 0);
+//		greedyBestFirst.solveGreedyBestFirst(matrix5, finalMatrix, 2, 0);
+		aStar.solveAStar(matrix5, finalMatrix, 2, 0);
 	}
 }
