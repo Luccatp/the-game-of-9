@@ -3,10 +3,14 @@ package com.ai.trab2.services;
 import com.ai.trab2.entities.Node;
 import com.ai.trab2.services.interfaces.BreadthFirstInterface;
 import com.ai.trab2.utils.ArrayTransformations;
+import com.ai.trab2.utils.MazeUtils;
 
 import java.util.*;
 
 public class BreadthFirst implements BreadthFirstInterface {
+    private int numberOfNodesCreated = 0;
+    private int getNumberOfNodesVisited = 0;
+
 
     @Override
     public void solveBreadthFirst(int[][] initialMatrix, int[][] finalMatrix, int x, int y) {
@@ -14,12 +18,15 @@ public class BreadthFirst implements BreadthFirstInterface {
         Queue<Node> queue = new LinkedList<>();
         queue.add(root);
 
+        numberOfNodesCreated++;
+
         while (!queue.isEmpty()) {
             Node currentNode = queue.poll();
+            getNumberOfNodesVisited++;
 
-            if (isEqual(currentNode.getValue(), finalMatrix)) {
+            if (ArrayTransformations.compareMatrixes(currentNode.getValue(), finalMatrix)) {
                 // Solution found, print or return the solution
-                printSolution(currentNode);
+                MazeUtils.printSolution(currentNode, numberOfNodesCreated, getNumberOfNodesVisited);
                 return;
             }
 
@@ -28,20 +35,6 @@ public class BreadthFirst implements BreadthFirstInterface {
         }
 
         System.out.println("No solution found.");
-    }
-
-    private boolean isEqual(int[][] matrix1, int[][] matrix2) {
-        // Implement logic to check if two matrices are equal
-        // This depends on your specific requirements for equality
-        // For simplicity, we'll assume the matrices are equal if all corresponding elements are equal
-        for (int i = 0; i < matrix1.length; i++) {
-            for (int j = 0; j < matrix1[i].length; j++) {
-                if (matrix1[i][j] != matrix2[i][j]) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     private void expandNode(Node node) {
@@ -54,22 +47,37 @@ public class BreadthFirst implements BreadthFirstInterface {
         if (zeroPosition[0] - 1 >= 0) {
             int up = currentValue[zeroPosition[0] - 1][zeroPosition[1]];
             int[][] upMatrix = swap(currentValue, up);
-            node.addChild(upMatrix);
+            boolean isEqualParent = checkIfMatrixIsEqualParent(node, upMatrix);
+            if(!isEqualParent) {
+                node.addChild(upMatrix);
+            }
         }
         if(zeroPosition[0] + 1 < currentValue.length) {
             int down = currentValue[zeroPosition[0] + 1][zeroPosition[1]];
             int[][] downMatrix = swap(currentValue, down);
-            node.addChild(downMatrix);
+            boolean isEqualParent = checkIfMatrixIsEqualParent(node, downMatrix);
+            if(!isEqualParent) {
+                node.addChild(downMatrix);
+            }
         }
         if(zeroPosition[1] - 1 >= 0) {
             int left = currentValue[zeroPosition[0]][zeroPosition[1] - 1];
             int[][] leftMatrix = swap(currentValue, left);
-            node.addChild(leftMatrix);
+            boolean isEqualParent = checkIfMatrixIsEqualParent(node, leftMatrix);
+            if(!isEqualParent) {
+                node.addChild(leftMatrix);
+            }
         }
         if(zeroPosition[1] + 1 < currentValue[0].length) {
             int right = currentValue[zeroPosition[0]][zeroPosition[1] + 1];
             int[][] rightMatrix = swap(currentValue, right);
-            node.addChild(rightMatrix);
+            boolean isEqualParent = checkIfMatrixIsEqualParent(node, rightMatrix);
+            if(!isEqualParent) {
+                node.addChild(rightMatrix);
+            }
+        }
+        for (Node childrens : node.getChildren()) {
+            this.numberOfNodesCreated++;
         }
     }
 
@@ -86,25 +94,18 @@ public class BreadthFirst implements BreadthFirstInterface {
        return tempMatrix;
     }
 
-    private void printSolution(Node node) {
-        // Implement logic to print or return the solution
-        // This depends on your specific requirements for displaying the solution
 
-        // Example code to print the solution
-        System.out.println("Solution found:");
-        while (node != null) {
-            printMatrix(node.getValue());
-            System.out.println();
-            node = node.getParent();
-        }
-    }
 
-    private void printMatrix(int[][] matrix) {
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; j++) {
-                System.out.print(matrix[i][j] + " ");
+    private boolean checkIfMatrixIsEqualParent(Node node, int[][] matrix) {
+        boolean hasEqualParent = false;
+        Node parentNode = node.getParent();
+        while (parentNode != null) {
+            if(ArrayTransformations.compareMatrixes(matrix, parentNode.getValue())) {
+                hasEqualParent = true;
+                break;
             }
-            System.out.println();
+            parentNode = parentNode.getParent();
         }
+        return hasEqualParent;
     }
 }
